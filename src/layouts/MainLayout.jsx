@@ -1,8 +1,13 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { NavLink, Outlet } from "react-router-dom";
+import { useCart } from "../context/CartContext"; //
+// 👈 import cart hook
 
 function MainLayout() {
+    const { cart } = useCart();
+    const cartCount = cart.reduce((sum, item) => sum + item.qty, 0);
+
     return (
         <div>
             {/* Navbar */}
@@ -12,7 +17,12 @@ function MainLayout() {
                         <i className="bi bi-fire me-1"></i> AnimeWear
                     </NavLink>
 
-                    <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <button
+                        className="navbar-toggler"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#navbarNav"
+                    >
                         <span className="navbar-toggler-icon"></span>
                     </button>
 
@@ -24,7 +34,9 @@ function MainLayout() {
                                 <NavLink
                                     to="/"
                                     end
-                                    className={({ isActive }) => `nav-link ${isActive ? "text-warning fw-bold" : ""}`}
+                                    className={({ isActive }) =>
+                                        `nav-link ${isActive ? "text-warning fw-bold" : ""}`
+                                    }
                                 >
                                     <i className="bi bi-house-door me-1"></i> Home
                                 </NavLink>
@@ -34,29 +46,33 @@ function MainLayout() {
                             <li className="nav-item mx-2">
                                 <NavLink
                                     to="/catalog"
-                                    className={({ isActive }) => `nav-link ${isActive ? "text-warning fw-bold" : ""}`}
+                                    className={({ isActive }) =>
+                                        `nav-link ${isActive ? "text-warning fw-bold" : ""}`
+                                    }
                                 >
                                     <i className="bi bi-bag me-1"></i> Catalog
                                 </NavLink>
                             </li>
 
-                            {/* 🎨 Designs (restored) */}
-                            <li className="nav-item mx-2">
-                                <NavLink
-                                    to="/designs"
-                                    className={({ isActive }) => `nav-link ${isActive ? "text-warning fw-bold" : ""}`}
-                                >
-                                    <i className="bi bi-palette me-1"></i> Designs
-                                </NavLink>
-                            </li>
+
 
                             {/* Cart */}
                             <li className="nav-item mx-2">
                                 <NavLink
                                     to="/cart"
-                                    className={({ isActive }) => `nav-link ${isActive ? "text-warning fw-bold" : ""}`}
+                                    className={({ isActive }) =>
+                                        `nav-link position-relative ${isActive ? "text-warning fw-bold" : ""}`
+                                    }
                                 >
                                     <i className="bi bi-cart me-1"></i> Cart
+                                    {cartCount > 0 && (
+                                        <span
+                                            className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark"
+                                            style={{ fontSize: "0.75rem" }}
+                                        >
+                                            {cartCount}
+                                        </span>
+                                    )}
                                 </NavLink>
                             </li>
 
@@ -83,6 +99,16 @@ function MainLayout() {
                                     <i className="bi bi-person-plus me-1"></i> Sign Up
                                 </NavLink>
                             </li>
+                            <li className="nav-item mx-2">
+                                <NavLink
+                                    to="admin/dashboard"
+                                    className={({ isActive }) => `nav-link ${isActive ? "text-warning fw-bold" : ""}`}
+                                >
+                                    <i className="bi bi-person-circle me-1"></i> Dashboard
+                                </NavLink>
+                            </li>
+
+
                         </ul>
                     </div>
                 </div>

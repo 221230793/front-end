@@ -1,64 +1,101 @@
+import { useCart } from "../context/CartContext";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 function Checkout() {
+    const { cart, clearCart } = useCart();
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
+
+    const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        setLoading(true);
+
+        // simulate order placement (later you’ll call backend API here)
+        setTimeout(() => {
+            setLoading(false);
+
+            // ✅ redirect to success page with order details
+            navigate("/order-success", {
+                state: {
+                    items: cart,
+                    total,
+                },
+            });
+
+            // ✅ clear cart ONLY after navigating
+            clearCart();
+        }, 1500);
+    };
+
     return (
-        <div className="container py-5" style={{ maxWidth: "700px" }}>
-            <h2 className="fw-bold mb-4 text-center">🛒 Checkout</h2>
+        <div className="container py-5">
+            <h2 className="fw-bold mb-4">🛒 Checkout</h2>
 
-            {/* Shipping Info */}
-            <h5 className="fw-bold mt-4">Shipping Address</h5>
-            <form>
-                <div className="row">
-                    <div className="col-md-6 mb-3">
-                        <label className="form-label">First Name</label>
-                        <input type="text" className="form-control" placeholder="John" />
-                    </div>
-                    <div className="col-md-6 mb-3">
-                        <label className="form-label">Last Name</label>
-                        <input type="text" className="form-control" placeholder="Doe" />
-                    </div>
-                </div>
-                <div className="mb-3">
-                    <label className="form-label">Address</label>
-                    <input type="text" className="form-control" placeholder="123 Anime Street" />
-                </div>
-                <div className="row">
-                    <div className="col-md-6 mb-3">
-                        <label className="form-label">City</label>
-                        <input type="text" className="form-control" placeholder="Tokyo" />
-                    </div>
-                    <div className="col-md-3 mb-3">
-                        <label className="form-label">Postal Code</label>
-                        <input type="text" className="form-control" placeholder="100-0001" />
-                    </div>
-                    <div className="col-md-3 mb-3">
-                        <label className="form-label">Country</label>
-                        <input type="text" className="form-control" placeholder="Japan" />
+            <div className="row">
+                {/* Order Summary */}
+                <div className="col-lg-6 mb-4">
+                    <div className="card shadow border-0">
+                        <div className="card-header bg-dark text-white fw-bold">
+                            Order Summary
+                        </div>
+                        <ul className="list-group list-group-flush">
+                            {cart.length === 0 ? (
+                                <li className="list-group-item text-muted">Your cart is empty.</li>
+                            ) : (
+                                cart.map((item) => (
+                                    <li key={item.id} className="list-group-item d-flex justify-content-between">
+                                        <span>{item.name} (x{item.qty})</span>
+                                        <span>R {(item.price * item.qty).toFixed(2)}</span>
+                                    </li>
+                                ))
+                            )}
+                            {cart.length > 0 && (
+                                <li className="list-group-item d-flex justify-content-between fw-bold">
+                                    <span>Total</span>
+                                    <span>R {total.toFixed(2)}</span>
+                                </li>
+                            )}
+                        </ul>
                     </div>
                 </div>
 
-                {/* Payment Info */}
-                <h5 className="fw-bold mt-4">Payment Details</h5>
-                <div className="mb-3">
-                    <label className="form-label">Card Number</label>
-                    <input type="text" className="form-control" placeholder="1234 5678 9012 3456" />
-                </div>
-                <div className="row">
-                    <div className="col-md-6 mb-3">
-                        <label className="form-label">Expiry Date</label>
-                        <input type="text" className="form-control" placeholder="MM/YY" />
-                    </div>
-                    <div className="col-md-6 mb-3">
-                        <label className="form-label">CVC</label>
-                        <input type="text" className="form-control" placeholder="123" />
-                    </div>
-                </div>
+                {/* Checkout Form */}
+                <div className="col-lg-6">
+                    <div className="card shadow border-0">
+                        <div className="card-header bg-warning fw-bold">Shipping & Payment</div>
+                        <div className="card-body">
+                            <form onSubmit={handleSubmit}>
+                                <div className="mb-3">
+                                    <label className="form-label">Full Name</label>
+                                    <input type="text" className="form-control" required />
+                                </div>
 
-                {/* Place Order */}
-                <div className="d-grid mt-4">
-                    <a href="/success" className="btn btn-warning btn-lg">
-                        Place Order <i className="bi bi-check-circle ms-2"></i>
-                    </a>
+                                <div className="mb-3">
+                                    <label className="form-label">Delivery Address</label>
+                                    <textarea className="form-control" rows="3" required></textarea>
+                                </div>
+
+                                <div className="mb-3">
+                                    <label className="form-label">Payment Method</label>
+                                    <select className="form-select" required>
+                                        <option value="">Select...</option>
+                                        <option value="card">Credit / Debit Card</option>
+                                        <option value="eft">EFT / Bank Transfer</option>
+                                        <option value="cod">Cash on Delivery</option>
+                                    </select>
+                                </div>
+
+                                <button type="submit" className="btn btn-dark w-100" disabled={loading}>
+                                    {loading ? "Placing Order..." : "Place Order"}
+                                </button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
-            </form>
+            </div>
         </div>
     );
 }

@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
+import { useCart } from "../context/CartContext";
 
 function Home() {
+
+    const { addToCart } = useCart();
     // Sample products (replace images with real ones in /public/img)
     const products = [
         { id: 1, name: "Naruto Hoodie", price: 49.99, img: "/img/naruto-hoodie.png" },
@@ -25,17 +28,93 @@ function Home() {
 
     return (
         <div>
-            {/* Hero Banner */}
-            <header className="text-white text-center d-flex align-items-center justify-content-center"
-                    style={{ height: "70vh", background: "linear-gradient(135deg, #4f46e5, #9333ea)" }}>
-                <div>
-                    <h1 className="display-3 fw-bold">Unleash Your Anime Style 👘</h1>
-                    <p className="lead mt-3">Premium hoodies, tees & beanies inspired by your favorite anime.</p>
-                    <Link to="/catalog" className="btn btn-warning btn-lg mt-4 shadow">
-                        Shop Now <i className="bi bi-arrow-right-circle ms-2"></i>
-                    </Link>
+            {/* Hero Section with Carousel */}
+
+            <header>
+                <div
+                    id="heroCarousel"
+                    className="carousel slide carousel-fade"
+                    data-bs-ride="carousel"
+                    data-bs-interval="5000"
+                >
+                    <div className="carousel-inner">
+
+                        {/* Slide 1 */}
+                        <div
+                            className="carousel-item active"
+                            style={{
+                                height: "70vh",
+                                backgroundImage: "url('/img/hero1.webp')",
+                                backgroundSize: "cover",
+                                backgroundPosition: "center",
+                            }}
+                        >
+                            <div className="d-flex h-100 align-items-center justify-content-center text-center text-white"
+                                 style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>
+                                <div>
+                                    <h1 className="display-3 fw-bold">Unleash Your Anime Style </h1>
+                                    <p className="lead mt-3">Premium hoodies, tees & beanies inspired by your favorite anime.</p>
+                                    <Link to="/catalog" className="btn btn-warning btn-lg mt-4 shadow">
+                                        Shop Now <i className="bi bi-arrow-right-circle ms-2"></i>
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Slide 2 */}
+                        <div
+                            className="carousel-item"
+                            style={{
+                                height: "70vh",
+                                backgroundImage: "url('/img/hero2.webp')",
+                                backgroundSize: "cover",
+                                backgroundPosition: "center",
+                            }}
+                        >
+                            <div className="d-flex h-100 align-items-center justify-content-center text-center text-white"
+                                 style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>
+                                <div>
+                                    <h1 className="display-3 fw-bold">🔥 Wear the Legend</h1>
+                                    <p className="lead mt-3">From Naruto to One Piece, bring your favorite heroes to life.</p>
+                                    <Link to="/catalog" className="btn btn-warning btn-lg mt-4 shadow">
+                                        Explore Collection <i className="bi bi-arrow-right-circle ms-2"></i>
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Slide 3 */}
+                        <div
+                            className="carousel-item"
+                            style={{
+                                height: "70vh",
+                                backgroundImage: "url('/img/hero3.jpeg')",
+                                backgroundSize: "cover",
+                                backgroundPosition: "center",
+                            }}
+                        >
+                            <div className="d-flex h-100 align-items-center justify-content-center text-center text-white"
+                                 style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>
+                                <div>
+                                    <h1 className="display-3 fw-bold">Worldwide Shipping 🌍</h1>
+                                    <p className="lead mt-3">Get your anime drip delivered to your doorstep.</p>
+                                    <Link to="/catalog" className="btn btn-warning btn-lg mt-4 shadow">
+                                        Start Shopping <i className="bi bi-arrow-right-circle ms-2"></i>
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* ✅ Only dots at bottom */}
+                    <div className="carousel-indicators">
+                        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" className="active"></button>
+                        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
+                        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button>
+                    </div>
                 </div>
             </header>
+
 
             {/* Best Sellers */}
             <main className="container py-5">
@@ -44,18 +123,16 @@ function Home() {
                     {products.map((p) => (
                         <div className="col-md-6 col-lg-4" key={p.id}>
                             <div className="card shadow-lg border-0 h-100 hover-shadow">
-                                {/* Clickable product image/title */}
                                 <Link to={`/product/${p.id}`}>
                                     <img src={p.img} className="card-img-top" alt={p.name} />
                                 </Link>
                                 <div className="card-body text-center">
-                                    <h5 className="card-title">
-                                        <Link to={`/product/${p.id}`} className="text-decoration-none text-dark">
-                                            {p.name}
-                                        </Link>
-                                    </h5>
-                                    <p className="text-muted">${p.price}</p>
-                                    <button className="btn btn-dark btn-sm">
+                                    <h5 className="card-title">{p.name}</h5>
+                                    <p className="text-muted">R {p.price.toFixed(2)}</p>
+                                    <button
+                                        className="btn btn-dark btn-sm"
+                                        onClick={() => addToCart(p)}
+                                    >
                                         <i className="bi bi-cart me-1"></i> Add to Cart
                                     </button>
                                 </div>
